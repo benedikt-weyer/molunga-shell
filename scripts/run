@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if ! command -v quickshell >/dev/null; then
+  echo "error: quickshell not found on PATH (nix: 'nix develop', or install pkgs.quickshell)" >&2
+  exit 1
+fi
+
+if ! command -v ironland-workspaces >/dev/null; then
+  echo "warning: ironland-workspaces not found on PATH - the workspace indicator" >&2
+  echo "         will show as unavailable. Build it from ../ironland-copositor" >&2
+  echo "         ('cargo build --bin ironland-workspaces') and add its target/" >&2
+  echo "         debug (or .../release) dir to PATH." >&2
+fi
+
+exec quickshell -p ./shell.qml "$@"

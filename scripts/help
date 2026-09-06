@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cat <<'EOF'
+molunga-shell scripts
+
+  run   Launch the shell (quickshell -p ./shell.qml)
+  help  Show this help message
+
+Scripts live in scripts/ and are on PATH via .envrc (direnv).
+EOF

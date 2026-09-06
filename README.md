@@ -8,9 +8,14 @@ application dock, and a notification/settings UI.
 ## Running
 
 ```sh
-quickshell -p /path/to/molunga-shell/shell.qml
+scripts/run
 ```
 
+(with direnv: just `run`, once `.envrc` has put `scripts/` on `PATH`). This
+is a thin wrapper around `quickshell -p ./shell.qml` that also warns if
+`ironland-workspaces` isn't on `PATH`.
+
+Equivalently, run `quickshell -p /path/to/molunga-shell/shell.qml` directly,
 or symlink this directory into `~/.config/quickshell/molunga-shell` and run
 `quickshell -c molunga-shell`.
 
