@@ -47,6 +47,8 @@ Variants {
 
             BarParts.NetworkWidget {}
 
+            BarParts.TrayWidget {}
+
             BarParts.NotificationButton {}
 
             BarParts.ClockWidget {}

@@ -3,8 +3,8 @@
 A [Quickshell](https://quickshell.org) configuration for
 [ironland-copositor](../ironland-copositor). Provides a top bar (workspace
 indicator, media widget, wifi/LAN/VPN status, notification bell, clock,
-sound input/output controls, settings and session/power buttons), an
-application dock, and a notification/settings UI.
+sound input/output controls, system tray, settings and session/power
+buttons), an application dock, and a notification/settings UI.
 
 ## Running
 
@@ -28,7 +28,8 @@ rest of the shell works against any wlr-layer-shell compositor.
 
 - `shell.qml` - entry point, instantiates everything below.
 - `modules/Bar.qml` - per-output top bar.
-- `modules/bar/*` - the bar's individual widgets.
+- `modules/bar/*` - the bar's individual widgets, including StatusNotifier
+  system tray icons.
 - `modules/Dock.qml` - application dock with persistent pins, running apps,
   and right-click desktop-entry actions.
 - `modules/NotificationPopups.qml`, `modules/NotificationMenu.qml` - toasts
