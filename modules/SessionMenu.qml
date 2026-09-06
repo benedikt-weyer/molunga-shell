@@ -3,6 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "./widgets" as Widgets
 
 // Reboot/shutdown/logout, opened from the bar's power icon. Each action
 // needs a second click within a few seconds to actually fire (the button
@@ -19,18 +20,28 @@ PanelWindow {
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
+    // Anchored to all four edges (rather than just top+right) so the
+    // window covers the whole output: that's what lets a click anywhere
+    // outside the panel below reach this window and close the menu, via
+    // Widgets.DismissOverlay.
     anchors.top: true
     anchors.right: true
-    margins.top: 4
-    margins.right: 4
-    implicitWidth: 220
-    implicitHeight: panel.implicitHeight
+    anchors.bottom: true
+    anchors.left: true
     color: "transparent"
 
     // Which action (if any) is one click away from firing.
     property string pending: ""
 
-    onVisibleChanged: if (!visible) pending = ""
+    onVisibleChanged: {
+        if (visible) dismissOverlay.forceActiveFocus();
+        else pending = "";
+    }
+
+    Widgets.DismissOverlay {
+        id: dismissOverlay
+        onDismissed: Services.UiState.sessionMenuOpen = false
+    }
 
     Timer {
         id: pendingTimeout
@@ -97,12 +108,21 @@ PanelWindow {
 
     Rectangle {
         id: panel
-        width: parent.width
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 4
+        width: 220
         implicitHeight: content.implicitHeight + 12
         radius: Services.Colors.radius
         color: Services.Colors.surface
         border.width: 1
         border.color: Services.Colors.border
+
+        // Absorbs clicks anywhere on the panel (not just its interactive
+        // controls) so they don't fall through to the dismiss overlay.
+        MouseArea {
+            anchors.fill: parent
+        }
 
         ColumnLayout {
             id: content

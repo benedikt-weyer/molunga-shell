@@ -18,7 +18,7 @@ FloatingWindow {
     implicitHeight: content.implicitHeight + 32
     color: Services.Colors.base
 
-    onVisibleChanged: if (visible) Services.CompositorConfig.reload()
+    onVisibleChanged: if (visible) { Services.CompositorConfig.reload(); content.forceActiveFocus(); }
 
     // --- small reusable pieces ------------------------------------------
 
@@ -109,6 +109,8 @@ FloatingWindow {
         anchors.top: parent.top
         anchors.margins: 16
         spacing: 8
+        focus: true
+        Keys.onEscapePressed: Services.UiState.settingsOpen = false
 
         RowLayout {
             Layout.fillWidth: true

@@ -3,6 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "./widgets" as Widgets
 
 // Notification history/menu, opened from the bar's bell icon. Shows
 // everything received this session (Services.Notifications.history), not
@@ -18,22 +19,40 @@ PanelWindow {
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
+    // Anchored to all four edges (rather than just top+right) so the
+    // window covers the whole output: that's what lets a click anywhere
+    // outside the panel below reach this window and close the menu, via
+    // Widgets.DismissOverlay.
     anchors.top: true
     anchors.right: true
-    margins.top: 4
-    margins.right: 4
-    implicitWidth: 360
-    implicitHeight: Math.min(520, panel.implicitHeight)
+    anchors.bottom: true
+    anchors.left: true
     color: "transparent"
+
+    onVisibleChanged: if (visible) dismissOverlay.forceActiveFocus();
+
+    Widgets.DismissOverlay {
+        id: dismissOverlay
+        onDismissed: Services.UiState.notificationMenuOpen = false
+    }
 
     Rectangle {
         id: panel
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 4
+        width: 360
+        height: Math.min(520, content.implicitHeight)
         radius: Services.Colors.radius
         color: Services.Colors.surface
         border.width: 1
         border.color: Services.Colors.border
-        implicitHeight: content.implicitHeight
+
+        // Absorbs clicks anywhere on the panel (not just its interactive
+        // controls) so they don't fall through to the dismiss overlay.
+        MouseArea {
+            anchors.fill: parent
+        }
 
         ColumnLayout {
             id: content

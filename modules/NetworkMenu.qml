@@ -18,12 +18,14 @@ PanelWindow {
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
+    // Anchored to all four edges (rather than just top+right) so the
+    // window covers the whole output: that's what lets a click anywhere
+    // outside the panel below reach this window and close the menu, via
+    // Widgets.DismissOverlay.
     anchors.top: true
     anchors.right: true
-    margins.top: 4
-    margins.right: 4
-    implicitWidth: 340
-    implicitHeight: panel.implicitHeight
+    anchors.bottom: true
+    anchors.left: true
     color: "transparent"
 
     // Cleared whenever the menu closes, so a half-typed password doesn't
@@ -31,16 +33,33 @@ PanelWindow {
     property var pskTarget: null
     property string pskInput: ""
 
-    onVisibleChanged: if (!visible) { pskTarget = null; pskInput = ""; }
+    onVisibleChanged: {
+        if (visible) dismissOverlay.forceActiveFocus();
+        else { pskTarget = null; pskInput = ""; }
+    }
+
+    Widgets.DismissOverlay {
+        id: dismissOverlay
+        onDismissed: Services.UiState.networkMenuOpen = false
+    }
 
     Rectangle {
         id: panel
-        width: parent.width
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: 4
+        width: 340
         implicitHeight: content.implicitHeight
         radius: Services.Colors.radius
         color: Services.Colors.surface
         border.width: 1
         border.color: Services.Colors.border
+
+        // Absorbs clicks anywhere on the panel (not just its interactive
+        // controls) so they don't fall through to the dismiss overlay.
+        MouseArea {
+            anchors.fill: parent
+        }
 
         ColumnLayout {
             id: content
