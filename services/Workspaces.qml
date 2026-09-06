@@ -1,4 +1,5 @@
 pragma Singleton
+import QtQuick
 import Quickshell
 import Quickshell.Io
 
@@ -50,9 +51,33 @@ Singleton {
             }
         }
 
+        // Otherwise a failure past startup (e.g. "compositor doesn't
+        // support ext-workspace-v1") is thrown away silently - the
+        // indicator still falls back to "workspaces unavailable" via
+        // `onExited` below, but with nothing in the logs explaining why.
+        stderr: SplitParser {
+            splitMarker: "\n"
+            onRead: data => {
+                const line = data.trim();
+                if (line) console.warn("Workspaces: ironland-workspaces:", line);
+            }
+        }
+
         onExited: (exitCode, exitStatus) => {
+            console.warn("Workspaces: ironland-workspaces exited (code", exitCode, ", status", exitStatus, ") - retrying in 3s");
             root.available = false;
             root.outputs = [];
+            restartTimer.start();
         }
+    }
+
+    // A dead compositor connection or output hotplug (see this helper's own
+    // "known limitation" doc comment: it only binds outputs present at
+    // startup) leaves `proc` exited with nothing to bring it back - retry
+    // instead of leaving the indicator permanently stuck on "unavailable".
+    Timer {
+        id: restartTimer
+        interval: 3000
+        onTriggered: proc.running = true
     }
 }
