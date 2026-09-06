@@ -11,7 +11,7 @@ PanelWindow {
     id: root
 
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-    visible: screen !== null && Services.UiState.notificationMenuOpen
+    visible: Services.UiState.notificationMenuOpen
 
     WlrLayershell.namespace: "molunga-notification-menu"
     WlrLayershell.layer: WlrLayer.Overlay

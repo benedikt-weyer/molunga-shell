@@ -2,6 +2,7 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "./widgets" as Widgets
 
 // Editor for ironland-copositor's own config.toml (terminal/browser/file
 // manager, top bar, workspace layout) - see Services.CompositorConfig for
@@ -68,34 +69,6 @@ FloatingWindow {
             font.pixelSize: 12
             clip: true
             onEditingFinished: field.editingFinished()
-        }
-    }
-
-    component ToggleSwitch: Rectangle {
-        id: toggle
-        property bool checked: false
-        signal toggled()
-
-        Layout.preferredWidth: 38
-        Layout.preferredHeight: 20
-        radius: 10
-        color: checked ? Services.Colors.accent : Services.Colors.overlay
-        Behavior on color { ColorAnimation { duration: 100 } }
-
-        Rectangle {
-            width: 16
-            height: 16
-            radius: 8
-            y: 2
-            x: toggle.checked ? toggle.width - width - 2 : 2
-            color: Services.Colors.base
-            Behavior on x { NumberAnimation { duration: 100 } }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: toggle.toggled()
         }
     }
 
@@ -194,7 +167,7 @@ FloatingWindow {
 
         FieldRow {
             label: "Server-side title bars"
-            ToggleSwitch {
+            Widgets.ToggleSwitch {
                 checked: Services.CompositorConfig.topBar
                 onToggled: Services.CompositorConfig.topBar = !Services.CompositorConfig.topBar
             }
@@ -237,7 +210,7 @@ FloatingWindow {
 
         FieldRow {
             label: "Dynamic (grow/prune)"
-            ToggleSwitch {
+            Widgets.ToggleSwitch {
                 checked: Services.CompositorConfig.workspaceDynamic
                 onToggled: Services.CompositorConfig.workspaceDynamic = !Services.CompositorConfig.workspaceDynamic
             }
@@ -245,7 +218,7 @@ FloatingWindow {
 
         FieldRow {
             label: "Switch overlay"
-            ToggleSwitch {
+            Widgets.ToggleSwitch {
                 checked: Services.CompositorConfig.workspaceOverlay
                 onToggled: Services.CompositorConfig.workspaceOverlay = !Services.CompositorConfig.workspaceOverlay
             }

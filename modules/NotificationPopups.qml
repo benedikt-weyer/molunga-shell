@@ -12,7 +12,7 @@ PanelWindow {
     id: root
 
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-    visible: screen !== null && Services.Notifications.active.length > 0
+    visible: Services.Notifications.active.length > 0
 
     WlrLayershell.namespace: "molunga-notifications"
     WlrLayershell.layer: WlrLayer.Overlay

@@ -43,6 +43,8 @@ Variants {
 
             BarParts.MediaWidget {}
 
+            BarParts.NetworkWidget {}
+
             BarParts.NotificationButton {}
 
             BarParts.ClockWidget {}
