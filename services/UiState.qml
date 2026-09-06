@@ -8,7 +8,7 @@ import Quickshell
 Singleton {
     property bool notificationMenuOpen: false
     property bool networkMenuOpen: false
-    property bool sessionMenuOpen: true
+    property bool sessionMenuOpen: false
     property bool settingsOpen: false
 
     // All three anchor to the same top-right corner, so keep at most one
