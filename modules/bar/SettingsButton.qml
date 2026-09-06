@@ -17,6 +17,6 @@ Item {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Services.UiState.settingsOpen = !Services.UiState.settingsOpen
+        onClicked: Services.UiState.toggleSettings()
     }
 }

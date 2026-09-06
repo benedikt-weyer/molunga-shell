@@ -23,6 +23,7 @@ ShellRoot {
     Modules.NotificationPopups {}
     Modules.NotificationMenu {}
     Modules.NetworkMenu {}
+    Modules.SoundMenu {}
     Modules.SessionMenu {}
     Modules.SettingsWindow {}
 }
