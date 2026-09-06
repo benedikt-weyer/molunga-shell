@@ -86,7 +86,8 @@ PanelWindow {
 
             Text {
                 text: actionRow.icon
-                font.pixelSize: 14
+                font.family: Services.Icons.family
+                font.pixelSize: 16
                 color: actionRow.isPending ? actionRow.tint : Services.Colors.text
             }
 
@@ -133,7 +134,7 @@ PanelWindow {
 
             ActionRow {
                 actionId: "logout"
-                icon: "⇥"
+                icon: "logout"
                 label: "Log out"
                 tint: Services.Colors.warn
                 onActivate: Services.Session.logout()
@@ -141,7 +142,7 @@ PanelWindow {
 
             ActionRow {
                 actionId: "reboot"
-                icon: "↻"
+                icon: "restart_alt"
                 label: "Reboot"
                 tint: Services.Colors.warn
                 onActivate: Services.Session.reboot()
@@ -149,7 +150,7 @@ PanelWindow {
 
             ActionRow {
                 actionId: "shutdown"
-                icon: "⏻"
+                icon: "power_settings_new"
                 label: "Shut down"
                 tint: Services.Colors.danger
                 onActivate: Services.Session.shutdown()

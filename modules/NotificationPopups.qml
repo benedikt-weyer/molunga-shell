@@ -61,9 +61,10 @@ PanelWindow {
                             elide: Text.ElideRight
                         }
                         Text {
-                            text: "✕"
+                            text: "close"
+                            font.family: Services.Icons.family
                             color: Services.Colors.subtext
-                            font.pixelSize: 11
+                            font.pixelSize: 12
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4

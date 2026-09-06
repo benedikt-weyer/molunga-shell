@@ -76,6 +76,9 @@ FloatingWindow {
         id: pill
         property bool selected: false
         property string label: ""
+        // When set, `label` is a Material Symbols name (e.g. "add") rather
+        // than plain text.
+        property bool icon: false
         signal picked()
 
         implicitWidth: pillText.implicitWidth + 16
@@ -89,7 +92,8 @@ FloatingWindow {
             id: pillText
             anchors.centerIn: parent
             text: pill.label
-            font.pixelSize: 11
+            font.family: pill.icon ? Services.Icons.family : ""
+            font.pixelSize: pill.icon ? 13 : 11
             color: pill.selected ? Services.Colors.accentText : Services.Colors.text
         }
 
@@ -124,9 +128,10 @@ FloatingWindow {
             }
 
             Text {
-                text: "✕"
+                text: "close"
+                font.family: Services.Icons.family
                 color: Services.Colors.subtext
-                font.pixelSize: 13
+                font.pixelSize: 15
                 MouseArea {
                     anchors.fill: parent
                     anchors.margins: -6
@@ -194,7 +199,8 @@ FloatingWindow {
         FieldRow {
             label: "Count"
             PillOption {
-                label: "−"
+                label: "remove"
+                icon: true
                 onPicked: Services.CompositorConfig.workspaceCount = Math.max(1, Services.CompositorConfig.workspaceCount - 1)
             }
             Text {
@@ -205,7 +211,8 @@ FloatingWindow {
                 horizontalAlignment: Text.AlignHCenter
             }
             PillOption {
-                label: "+"
+                label: "add"
+                icon: true
                 onPicked: Services.CompositorConfig.workspaceCount = Services.CompositorConfig.workspaceCount + 1
             }
         }

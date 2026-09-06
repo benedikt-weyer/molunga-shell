@@ -126,11 +126,19 @@ PanelWindow {
 
                                 Text {
                                     Layout.fillWidth: true
-                                    text: row.modelData.name + (Services.Network.isSecured(row.modelData) ? " 🔒" : "")
+                                    text: row.modelData.name
                                     color: Services.Colors.text
                                     font.pixelSize: 12
                                     font.bold: row.modelData.connected
                                     elide: Text.ElideRight
+                                }
+
+                                Text {
+                                    visible: Services.Network.isSecured(row.modelData)
+                                    text: "lock"
+                                    font.family: Services.Icons.family
+                                    font.pixelSize: 11
+                                    color: Services.Colors.subtext
                                 }
 
                                 Text {

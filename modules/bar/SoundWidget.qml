@@ -16,13 +16,14 @@ Item {
 
         Text {
             text: {
-                if (!Services.Audio.outputDevice || Services.Audio.outputMuted) return "🔇";
-                if (Services.Audio.outputVolume < 0.34) return "🔈";
-                if (Services.Audio.outputVolume < 0.67) return "🔉";
-                return "🔊";
+                if (!Services.Audio.outputDevice || Services.Audio.outputMuted) return "volume_off";
+                if (Services.Audio.outputVolume < 0.34) return "volume_mute";
+                if (Services.Audio.outputVolume < 0.67) return "volume_down";
+                return "volume_up";
             }
+            font.family: Services.Icons.family
             color: Services.UiState.soundMenuOpen ? Services.Colors.accent : Services.Colors.text
-            font.pixelSize: 12
+            font.pixelSize: 15
         }
 
         Text {

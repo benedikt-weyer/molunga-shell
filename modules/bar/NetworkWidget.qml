@@ -16,15 +16,17 @@ Item {
 
         Text {
             visible: Services.Network.wiredSupported && Services.Network.wiredConnected
-            text: "🖧"
-            font.pixelSize: 12
+            text: "lan"
+            font.family: Services.Icons.family
+            font.pixelSize: 14
             color: Services.Colors.text
         }
 
         Text {
             visible: Services.Network.wifiSupported
-            text: "📶"
-            font.pixelSize: 12
+            text: "wifi"
+            font.family: Services.Icons.family
+            font.pixelSize: 14
             color: {
                 if (!Services.Network.wifiEnabled) return Services.Colors.disabled;
                 if (Services.Network.activeWifiNetwork) return Services.Colors.text;
@@ -34,8 +36,9 @@ Item {
 
         Text {
             visible: Services.Vpn.available && Services.Vpn.anyActive
-            text: "🔒"
-            font.pixelSize: 11
+            text: "lock"
+            font.family: Services.Icons.family
+            font.pixelSize: 13
             color: Services.Colors.accent
         }
 

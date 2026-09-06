@@ -25,8 +25,9 @@ RowLayout {
     }
 
     Text {
-        text: "⏮"
-        font.pixelSize: 13
+        text: "skip_previous"
+        font.family: Services.Icons.family
+        font.pixelSize: 15
         color: root.player && root.player.canGoPrevious ? Services.Colors.text : Services.Colors.disabled
         MouseArea {
             anchors.fill: parent
@@ -38,8 +39,9 @@ RowLayout {
     }
 
     Text {
-        text: root.player && root.player.isPlaying ? "⏸" : "▶"
-        font.pixelSize: 13
+        text: root.player && root.player.isPlaying ? "pause" : "play_arrow"
+        font.family: Services.Icons.family
+        font.pixelSize: 15
         color: root.player && root.player.canTogglePlaying ? Services.Colors.accent : Services.Colors.disabled
         MouseArea {
             anchors.fill: parent
@@ -51,8 +53,9 @@ RowLayout {
     }
 
     Text {
-        text: "⏭"
-        font.pixelSize: 13
+        text: "skip_next"
+        font.family: Services.Icons.family
+        font.pixelSize: 15
         color: root.player && root.player.canGoNext ? Services.Colors.text : Services.Colors.disabled
         MouseArea {
             anchors.fill: parent

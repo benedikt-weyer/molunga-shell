@@ -69,9 +69,10 @@ PanelWindow {
             }
             Text {
                 visible: deviceRow.selected
-                text: "✓"
+                text: "check"
+                font.family: Services.Icons.family
+                font.pixelSize: 13
                 color: Services.Colors.accent
-                font.bold: true
             }
         }
 
@@ -124,8 +125,9 @@ PanelWindow {
 
                 Text {
                     text: section.glyph
+                    font.family: Services.Icons.family
                     color: section.device ? Services.Colors.accent : Services.Colors.disabled
-                    font.pixelSize: 15
+                    font.pixelSize: 17
                 }
                 Text {
                     Layout.fillWidth: true
@@ -135,9 +137,10 @@ PanelWindow {
                     elide: Text.ElideRight
                 }
                 Text {
-                    text: section.pickerOpen ? "⌃" : "⌄"
+                    text: section.pickerOpen ? "expand_less" : "expand_more"
+                    font.family: Services.Icons.family
                     color: Services.Colors.subtext
-                    font.pixelSize: 13
+                    font.pixelSize: 15
                 }
             }
 
@@ -186,10 +189,10 @@ PanelWindow {
 
                 Text {
                     anchors.centerIn: parent
-                    text: section.muted ? "×" : section.glyph
+                    text: section.muted ? "volume_off" : section.glyph
+                    font.family: Services.Icons.family
                     color: section.muted ? Services.Colors.danger : Services.Colors.text
-                    font.pixelSize: 13
-                    font.bold: section.muted
+                    font.pixelSize: 15
                 }
 
                 MouseArea {
@@ -266,7 +269,7 @@ PanelWindow {
                 Layout.leftMargin: 14
                 Layout.rightMargin: 14
                 title: "Output"
-                glyph: "🔊"
+                glyph: "volume_up"
                 device: Services.Audio.outputDevice
                 devices: Services.Audio.outputDevices
                 volume: Services.Audio.outputVolume
@@ -297,7 +300,7 @@ PanelWindow {
                 Layout.rightMargin: 14
                 Layout.bottomMargin: 14
                 title: "Input"
-                glyph: "🎙"
+                glyph: "mic"
                 device: Services.Audio.inputDevice
                 devices: Services.Audio.inputDevices
                 volume: Services.Audio.inputVolume

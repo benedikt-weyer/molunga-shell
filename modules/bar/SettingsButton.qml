@@ -9,9 +9,10 @@ Item {
     Text {
         id: label
         anchors.centerIn: parent
-        text: "⚙"
+        text: "settings"
+        font.family: Services.Icons.family
         color: Services.UiState.settingsOpen ? Services.Colors.accent : Services.Colors.text
-        font.pixelSize: 14
+        font.pixelSize: 15
     }
 
     MouseArea {

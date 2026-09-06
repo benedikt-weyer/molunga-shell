@@ -1,17 +1,30 @@
 import QtQuick
+import QtQuick.Layouts
 import "../../services" as Services
 
 Item {
     id: root
-    implicitWidth: label.implicitWidth + 8
-    implicitHeight: label.implicitHeight
+    implicitWidth: row.implicitWidth + 8
+    implicitHeight: row.implicitHeight
 
-    Text {
-        id: label
+    RowLayout {
+        id: row
         anchors.centerIn: parent
-        text: Services.Notifications.history.length > 0 ? "🔔 " + Services.Notifications.history.length : "🔔"
-        color: Services.UiState.notificationMenuOpen ? Services.Colors.accent : Services.Colors.text
-        font.pixelSize: 12
+        spacing: 3
+
+        Text {
+            text: "notifications"
+            font.family: Services.Icons.family
+            font.pixelSize: 15
+            color: Services.UiState.notificationMenuOpen ? Services.Colors.accent : Services.Colors.text
+        }
+
+        Text {
+            visible: Services.Notifications.history.length > 0
+            text: Services.Notifications.history.length
+            color: Services.UiState.notificationMenuOpen ? Services.Colors.accent : Services.Colors.text
+            font.pixelSize: 11
+        }
     }
 
     MouseArea {
