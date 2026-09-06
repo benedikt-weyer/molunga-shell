@@ -2,8 +2,8 @@
 
 A [Quickshell](https://quickshell.org) configuration for
 [ironland-copositor](../ironland-copositor). Provides a top bar (workspace
-indicator, media widget, notification bell, clock, settings button), an
-application dock, and a notification/settings UI.
+indicator, media widget, wifi/LAN/VPN status, notification bell, clock,
+settings button), an application dock, and a notification/settings UI.
 
 ## Running
 
@@ -31,10 +31,13 @@ rest of the shell works against any wlr-layer-shell compositor.
 - `modules/Dock.qml` - pinned-app launcher dock.
 - `modules/NotificationPopups.qml`, `modules/NotificationMenu.qml` - toasts
   and notification history.
+- `modules/NetworkMenu.qml` - wifi/LAN/VPN details and controls.
 - `modules/SettingsWindow.qml` - editor for ironland-copositor's
   `config.toml`.
-- `services/*` - singletons: theme tokens, the workspace/notification/config
-  state each widget above reads from.
+- `modules/widgets/*` - small reusable pieces (e.g. `ToggleSwitch`) shared
+  across the modules above.
+- `services/*` - singletons: theme tokens, and the
+  workspace/notification/network/config state each widget above reads from.
 
 ## Workspace protocol
 
@@ -43,3 +46,10 @@ built-in support for `ext-workspace-v1` - it shells out to
 `ironland-workspaces`, a small companion Wayland client (in the compositor
 repo) that bridges that protocol to line-delimited JSON on stdin/stdout. See
 that binary's module doc for the wire format.
+
+Wifi/LAN status (`services/Network.qml`) is the exception to all of the
+above: it's compositor-agnostic (talks to NetworkManager over D-Bus, not to
+ironland-copositor), so it uses Quickshell's own `Quickshell.Networking`
+module directly, no bridging needed. VPN (`services/Vpn.qml`) needs a
+little more, since NetworkManager's VPN connection profiles aren't part of
+that module: it polls `nmcli` every few seconds instead.
