@@ -8,17 +8,26 @@ import Quickshell
 Singleton {
     property bool notificationMenuOpen: false
     property bool networkMenuOpen: false
+    property bool sessionMenuOpen: true
     property bool settingsOpen: false
 
-    // Both menus anchor to the same top-right corner, so keep at most one
+    // All three anchor to the same top-right corner, so keep at most one
     // open at a time rather than stacking them.
     function toggleNotificationMenu() {
         networkMenuOpen = false;
+        sessionMenuOpen = false;
         notificationMenuOpen = !notificationMenuOpen;
     }
 
     function toggleNetworkMenu() {
         notificationMenuOpen = false;
+        sessionMenuOpen = false;
         networkMenuOpen = !networkMenuOpen;
+    }
+
+    function toggleSessionMenu() {
+        notificationMenuOpen = false;
+        networkMenuOpen = false;
+        sessionMenuOpen = !sessionMenuOpen;
     }
 }

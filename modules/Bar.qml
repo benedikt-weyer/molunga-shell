@@ -50,6 +50,8 @@ Variants {
             BarParts.ClockWidget {}
 
             BarParts.SettingsButton {}
+
+            BarParts.SessionButton {}
         }
     }
 }
