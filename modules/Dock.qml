@@ -16,9 +16,11 @@ import "../services" as Services
 // directly, so apps pick up whatever the .desktop file specifies (Exec
 // field, terminal wrapping, etc). ironland-copositor's own configured
 // terminal/browser/file manager (see `Services.CompositorConfig`) are
-// resolved by heuristic name lookup and used as the initial set of pins,
-// ahead of a few fixed extras. Pin changes are saved in Quickshell's state
-// directory. Entries that don't resolve to an installed app are skipped.
+// resolved by heuristic name lookup and used as the initial set of pins on
+// first run, ahead of a few fixed extras. Pin changes are saved in
+// Quickshell's state directory and loaded back verbatim from then on, so
+// they never get overwritten by a re-derived default. Entries that don't
+// resolve to an installed app are skipped.
 //
 // Running tiles are one per toplevel (so an app with two windows gets two
 // tiles), clicking one activates that specific window, and the currently
@@ -101,10 +103,24 @@ PanelWindow {
         printErrors: false
         onFileChanged: reload()
         onAdapterUpdated: writeAdapter()
+        // Seed pins from `defaultPinnedIds` only on a genuine first run
+        // (no state file yet) - never as `pinnedIds`'s declared default.
+        // `defaultPinnedIds` is a live expression (it tracks
+        // CompositorConfig's async-resolved terminal/browser/file manager
+        // and DesktopEntries lookups), so binding `pinnedIds` to it
+        // directly would leave the property "live" until something else
+        // overwrites it; any later recompute of `defaultPinnedIds` (e.g.
+        // once CompositorConfig or the desktop entry scan catches up) would
+        // fire `onAdapterUpdated` and silently persist the new default over
+        // whatever the user had actually pinned.
+        onLoadFailed: error => {
+            if (error === FileViewError.FileNotFound)
+                pinState.pinnedIds = dock.defaultPinnedIds;
+        }
 
         JsonAdapter {
             id: pinState
-            property var pinnedIds: dock.defaultPinnedIds
+            property var pinnedIds: []
         }
     }
 
