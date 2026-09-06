@@ -29,7 +29,8 @@ rest of the shell works against any wlr-layer-shell compositor.
 - `shell.qml` - entry point, instantiates everything below.
 - `modules/Bar.qml` - per-output top bar.
 - `modules/bar/*` - the bar's individual widgets.
-- `modules/Dock.qml` - pinned-app launcher dock.
+- `modules/Dock.qml` - application dock with persistent pins, running apps,
+  and right-click desktop-entry actions.
 - `modules/NotificationPopups.qml`, `modules/NotificationMenu.qml` - toasts
   and notification history.
 - `modules/NetworkMenu.qml` - wifi/LAN/VPN details and controls.

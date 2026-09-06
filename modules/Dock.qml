@@ -1,11 +1,14 @@
+pragma ComponentBehavior: Bound
+
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
 
-// A pinned-app launcher dock, bottom-anchored on the primary screen, with a
+// An application dock, bottom-anchored on the primary screen, with a
 // running-apps section fed by the compositor's `wlr-foreign-toplevel-
 // management` support (see `Quickshell.Wayland.ToplevelManager`).
 //
@@ -13,9 +16,9 @@ import "../services" as Services
 // directly, so apps pick up whatever the .desktop file specifies (Exec
 // field, terminal wrapping, etc). ironland-copositor's own configured
 // terminal/browser/file manager (see `Services.CompositorConfig`) are
-// resolved by heuristic name lookup and pinned automatically, ahead of a
-// few fixed extras; entries that don't resolve to an installed app are
-// just skipped rather than shown broken.
+// resolved by heuristic name lookup and used as the initial set of pins,
+// ahead of a few fixed extras. Pin changes are saved in Quickshell's state
+// directory. Entries that don't resolve to an installed app are skipped.
 //
 // Running tiles are one per toplevel (so an app with two windows gets two
 // tiles), clicking one activates that specific window, and the currently
@@ -40,7 +43,7 @@ PanelWindow {
 
     readonly property var runningToplevels: ToplevelManager.toplevels
 
-    readonly property var entries: {
+    readonly property var defaultPinnedIds: {
         const ids = [
             Services.CompositorConfig.terminal,
             Services.CompositorConfig.browser,
@@ -51,11 +54,202 @@ PanelWindow {
         const result = [];
         for (const id of ids) {
             if (!id || seen.has(id)) continue;
-            seen.add(id);
+            const entry = DesktopEntries.byId(id) || DesktopEntries.heuristicLookup(id);
+            if (entry && !entry.noDisplay && !seen.has(entry.id)) {
+                seen.add(entry.id);
+                result.push(entry.id);
+            }
+        }
+        return result;
+    }
+
+    readonly property var entries: {
+        const result = [];
+        for (const id of pinState.pinnedIds ?? []) {
             const entry = DesktopEntries.byId(id) || DesktopEntries.heuristicLookup(id);
             if (entry && !entry.noDisplay) result.push(entry);
         }
         return result;
+    }
+
+    function isPinned(entry) {
+        return entry && (pinState.pinnedIds ?? []).includes(entry.id);
+    }
+
+    function setPinned(entry, pinned) {
+        if (!entry) return;
+        const ids = [...(pinState.pinnedIds ?? [])];
+        const index = ids.indexOf(entry.id);
+        if (pinned && index === -1) ids.push(entry.id);
+        if (!pinned && index !== -1) ids.splice(index, 1);
+        pinState.pinnedIds = ids;
+    }
+
+    function openContextMenu(anchorItem, entry, toplevel) {
+        appMenu.visible = false;
+        appMenu.desktopEntry = entry;
+        appMenu.toplevel = toplevel;
+        appMenu.anchorItem = anchorItem;
+        appMenu.visible = true;
+    }
+
+    FileView {
+        id: pinFile
+        path: Quickshell.statePath("dock-pins.json")
+        blockLoading: true
+        watchChanges: true
+        printErrors: false
+        onFileChanged: reload()
+        onAdapterUpdated: writeAdapter()
+
+        JsonAdapter {
+            id: pinState
+            property var pinnedIds: dock.defaultPinnedIds
+        }
+    }
+
+    component ContextMenuItem: Rectangle {
+        id: menuItem
+
+        required property string label
+        property string iconName: ""
+        signal selected
+
+        width: 226
+        height: 34
+        radius: Services.Colors.radiusSmall
+        color: menuMouse.containsMouse ? Services.Colors.overlay : "transparent"
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 9
+            anchors.rightMargin: 9
+            spacing: 9
+
+            IconImage {
+                visible: menuItem.iconName.length > 0
+                implicitSize: 16
+                source: Quickshell.iconPath(menuItem.iconName, "application-x-executable")
+            }
+
+            Text {
+                Layout.fillWidth: true
+                text: menuItem.label
+                color: Services.Colors.text
+                font.pixelSize: 13
+                elide: Text.ElideRight
+            }
+        }
+
+        MouseArea {
+            id: menuMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: menuItem.selected()
+        }
+    }
+
+    PopupWindow {
+        id: appMenu
+
+        property var desktopEntry: null
+        property var toplevel: null
+        property Item anchorItem: null
+
+        anchor.item: anchorItem
+        anchor.edges: Edges.Top | Edges.Left
+        anchor.gravity: Edges.Top | Edges.Right
+        anchor.margins.top: 6
+        implicitWidth: 238
+        implicitHeight: menuColumn.implicitHeight + 12
+        color: "transparent"
+
+        Rectangle {
+            anchors.fill: parent
+            radius: Services.Colors.radius
+            color: Services.Colors.surface
+            border.color: Services.Colors.border
+            border.width: 1
+
+            Column {
+                id: menuColumn
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 6
+
+                Text {
+                    width: parent.width
+                    height: 30
+                    leftPadding: 9
+                    rightPadding: 9
+                    verticalAlignment: Text.AlignVCenter
+                    text: appMenu.desktopEntry?.name ?? appMenu.toplevel?.title ?? "Application"
+                    color: Services.Colors.text
+                    font.bold: true
+                    font.pixelSize: 13
+                    elide: Text.ElideRight
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    color: Services.Colors.border
+                }
+
+                ContextMenuItem {
+                    visible: appMenu.desktopEntry !== null
+                    label: "Open new window"
+                    iconName: appMenu.desktopEntry?.icon ?? ""
+                    onSelected: {
+                        appMenu.desktopEntry.execute();
+                        appMenu.visible = false;
+                    }
+                }
+
+                Repeater {
+                    model: appMenu.desktopEntry?.actions ?? []
+
+                    delegate: ContextMenuItem {
+                        required property var modelData
+                        label: modelData.name
+                        iconName: modelData.icon
+                        onSelected: {
+                            modelData.execute();
+                            appMenu.visible = false;
+                        }
+                    }
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    visible: appMenu.desktopEntry !== null
+                    color: Services.Colors.border
+                }
+
+                ContextMenuItem {
+                    visible: appMenu.desktopEntry !== null
+                    label: dock.isPinned(appMenu.desktopEntry) ? "Unpin from dock" : "Pin to dock"
+                    iconName: dock.isPinned(appMenu.desktopEntry) ? "list-remove" : "list-add"
+                    onSelected: {
+                        dock.setPinned(appMenu.desktopEntry, !dock.isPinned(appMenu.desktopEntry));
+                        appMenu.visible = false;
+                    }
+                }
+
+                ContextMenuItem {
+                    visible: appMenu.toplevel !== null
+                    label: "Close window"
+                    iconName: "window-close"
+                    onSelected: {
+                        appMenu.toplevel.close();
+                        appMenu.visible = false;
+                    }
+                }
+            }
+        }
     }
 
     Rectangle {
@@ -103,8 +297,14 @@ PanelWindow {
 
                     MouseArea {
                         anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: pinnedTile.modelData.execute()
+                        onClicked: mouse => {
+                            if (mouse.button === Qt.RightButton)
+                                dock.openContextMenu(pinnedTile, pinnedTile.modelData, null);
+                            else
+                                pinnedTile.modelData.execute();
+                        }
                     }
                 }
             }
@@ -124,20 +324,28 @@ PanelWindow {
                 delegate: DockTile {
                     id: runningTile
                     required property var modelData
+                    readonly property var desktopEntry:
+                        DesktopEntries.byId(modelData.appId) || DesktopEntries.heuristicLookup(modelData.appId)
                     highlighted: modelData.activated
 
                     IconImage {
                         anchors.centerIn: parent
                         implicitSize: 28
                         source: Quickshell.iconPath(
-                            DesktopEntries.heuristicLookup(runningTile.modelData.appId)?.icon ?? "",
+                            runningTile.desktopEntry?.icon ?? "",
                             "application-x-executable")
                     }
 
                     MouseArea {
                         anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: runningTile.modelData.activate()
+                        onClicked: mouse => {
+                            if (mouse.button === Qt.RightButton)
+                                dock.openContextMenu(runningTile, runningTile.desktopEntry, runningTile.modelData);
+                            else
+                                runningTile.modelData.activate();
+                        }
                     }
                 }
             }
