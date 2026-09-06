@@ -30,6 +30,19 @@ Singleton {
         proc.write(JSON.stringify({ activate: { output: output, index: index } }) + "\n");
     }
 
+    // Steps `output`'s active workspace by `delta` (+1/-1), e.g. from a
+    // mousewheel over the workspace indicator. Clamps to the workspace list
+    // currently known for that output rather than growing/wrapping past it -
+    // the compositor is the source of truth for how many workspaces exist.
+    function scrollActivate(output, delta) {
+        const workspaces = forOutput(output);
+        if (workspaces.length === 0) return;
+        const current = workspaces.findIndex(w => w.active);
+        const from = current === -1 ? 0 : current;
+        const next = Math.max(0, Math.min(workspaces.length - 1, from + delta));
+        if (next !== from) activate(output, next);
+    }
+
     Process {
         id: proc
         command: ["ironland-workspaces"]
