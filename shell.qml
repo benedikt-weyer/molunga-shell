@@ -1,3 +1,10 @@
+//@ pragma UseQApplication
+// Tray icons' context menus (TrayWidget.qml's `SystemTrayItem.display()`)
+// are native DBusMenu items rendered through Qt's platform menu backend,
+// which only exists in QApplication (widgets) mode - without this pragma
+// they fail silently at click time with "Cannot display PlatformMenuEntry
+// as quickshell was not started in QApplication mode".
+
 //! molunga-shell: a Quickshell configuration built for ironland-copositor.
 //!
 //! - Bar.qml: per-output top bar (workspace indicator, media widget,
