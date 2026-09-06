@@ -20,6 +20,16 @@ Equivalently, run `quickshell -p /path/to/molunga-shell/shell.qml` directly,
 or symlink this directory into `~/.config/quickshell/molunga-shell` and run
 `quickshell -c molunga-shell`.
 
+The packaged `molunga-shell` binary (`nix build`, and what `nix/module.nix`'s
+systemd service runs) always does the latter - it (re)points
+`~/.config/quickshell/molunga-shell` at the current build on each launch and
+runs `-c molunga-shell`, rather than `-p <store path>`. Quickshell keys a
+config's persisted state (including dock pins, see `Dock.qml`) off how the
+config was identified, and identifying it by its Nix store path would make
+every rebuild - which changes that path - look like a brand-new, state-less
+config. `scripts/run`'s plain `-p ./shell.qml` is fine for local dev, since a
+working-tree checkout path stays stable across commits.
+
 The workspace indicator needs the `ironland-workspaces` helper (built
 alongside `ironland-copositor` itself - see its `Cargo.toml`) on `PATH`; the
 rest of the shell works against any wlr-layer-shell compositor.
