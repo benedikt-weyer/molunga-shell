@@ -324,8 +324,21 @@ PanelWindow {
                 delegate: DockTile {
                     id: runningTile
                     required property var modelData
+                    // `heuristicLookup` fuzzy-matches its argument against
+                    // every installed app's name, so calling it with an
+                    // empty string (any app that never sets a Wayland
+                    // app_id at all - e.g. gui-settings, a Fyne/GLFW app -
+                    // reports `appId: ""`, not a name that just fails to
+                    // match) matched a essentially arbitrary desktop entry
+                    // instead of finding none. Only heuristic-match a
+                    // non-empty appId, and fall back to the window title
+                    // (still a real signal, just a noisier one) before
+                    // giving up and letting the IconImage below use its own
+                    // generic fallback.
                     readonly property var desktopEntry:
-                        DesktopEntries.byId(modelData.appId) || DesktopEntries.heuristicLookup(modelData.appId)
+                        DesktopEntries.byId(modelData.appId)
+                        || (modelData.appId ? DesktopEntries.heuristicLookup(modelData.appId) : null)
+                        || (modelData.title ? DesktopEntries.heuristicLookup(modelData.title) : null)
                     highlighted: modelData.activated
 
                     IconImage {
