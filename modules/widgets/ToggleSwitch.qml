@@ -13,7 +13,7 @@ Rectangle {
     implicitHeight: 20
     radius: 10
     color: checked ? Services.Colors.accent : Services.Colors.overlay
-    Behavior on color { ColorAnimation { duration: 100 } }
+    Behavior on color { ColorAnim {} }
 
     Rectangle {
         width: 16
@@ -22,7 +22,7 @@ Rectangle {
         y: 2
         x: root.checked ? root.width - width - 2 : 2
         color: Services.Colors.base
-        Behavior on x { NumberAnimation { duration: 100 } }
+        Behavior on x { Anim { type: Anim.FastSpatial } }
     }
 
     MouseArea {

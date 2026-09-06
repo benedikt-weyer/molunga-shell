@@ -12,7 +12,8 @@ PanelWindow {
     id: root
 
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-    visible: Services.UiState.notificationMenuOpen
+    readonly property bool menuOpen: Services.UiState.notificationMenuOpen
+    visible: menuOpen || panel.animating
 
     WlrLayershell.namespace: "molunga-notification-menu"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -29,24 +30,21 @@ PanelWindow {
     anchors.left: true
     color: "transparent"
 
-    onVisibleChanged: if (visible) dismissOverlay.forceActiveFocus();
+    onMenuOpenChanged: if (menuOpen) dismissOverlay.forceActiveFocus();
 
     Widgets.DismissOverlay {
         id: dismissOverlay
         onDismissed: Services.UiState.notificationMenuOpen = false
     }
 
-    Rectangle {
+    Widgets.PopupPanel {
         id: panel
+        open: root.menuOpen
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 4
         width: 360
         height: Math.min(520, content.implicitHeight)
-        radius: Services.Colors.radius
-        color: Services.Colors.surface
-        border.width: 1
-        border.color: Services.Colors.border
 
         // Absorbs clicks anywhere on the panel (not just its interactive
         // controls) so they don't fall through to the dismiss overlay.
@@ -102,6 +100,13 @@ PanelWindow {
                 model: Services.Notifications.history
                 spacing: 4
                 boundsBehavior: Flickable.StopAtBounds
+
+                add: Transition {
+                    Widgets.Anim { properties: "opacity"; from: 0; to: 1; type: Widgets.Anim.DefaultEffects }
+                }
+                displaced: Transition {
+                    Widgets.Anim { properties: "y"; type: Widgets.Anim.FastSpatial }
+                }
 
                 delegate: Rectangle {
                     id: item

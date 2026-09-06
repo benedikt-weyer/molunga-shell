@@ -13,7 +13,8 @@ PanelWindow {
     id: root
 
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-    visible: Services.UiState.sessionMenuOpen
+    readonly property bool menuOpen: Services.UiState.sessionMenuOpen
+    visible: menuOpen || panel.animating
 
     WlrLayershell.namespace: "molunga-session-menu"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -33,8 +34,8 @@ PanelWindow {
     // Which action (if any) is one click away from firing.
     property string pending: ""
 
-    onVisibleChanged: {
-        if (visible) dismissOverlay.forceActiveFocus();
+    onMenuOpenChanged: {
+        if (menuOpen) dismissOverlay.forceActiveFocus();
         else pending = "";
     }
 
@@ -74,7 +75,7 @@ PanelWindow {
         implicitHeight: 34
         radius: Services.Colors.radiusSmall
         color: isPending ? Services.Colors.overlay : (hover.hovered ? Services.Colors.surfaceAlt : "transparent")
-        Behavior on color { ColorAnimation { duration: 100 } }
+        Behavior on color { Widgets.ColorAnim {} }
 
         HoverHandler { id: hover }
 
@@ -107,17 +108,14 @@ PanelWindow {
         }
     }
 
-    Rectangle {
+    Widgets.PopupPanel {
         id: panel
+        open: root.menuOpen
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 4
         width: 220
         implicitHeight: content.implicitHeight + 12
-        radius: Services.Colors.radius
-        color: Services.Colors.surface
-        border.width: 1
-        border.color: Services.Colors.border
 
         // Absorbs clicks anywhere on the panel (not just its interactive
         // controls) so they don't fall through to the dismiss overlay.

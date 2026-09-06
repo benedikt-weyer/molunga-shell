@@ -11,7 +11,8 @@ PanelWindow {
     id: root
 
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-    visible: Services.UiState.networkMenuOpen
+    readonly property bool menuOpen: Services.UiState.networkMenuOpen
+    visible: menuOpen || panel.animating
 
     WlrLayershell.namespace: "molunga-network-menu"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -33,8 +34,8 @@ PanelWindow {
     property var pskTarget: null
     property string pskInput: ""
 
-    onVisibleChanged: {
-        if (visible) dismissOverlay.forceActiveFocus();
+    onMenuOpenChanged: {
+        if (menuOpen) dismissOverlay.forceActiveFocus();
         else { pskTarget = null; pskInput = ""; }
     }
 
@@ -43,17 +44,14 @@ PanelWindow {
         onDismissed: Services.UiState.networkMenuOpen = false
     }
 
-    Rectangle {
+    Widgets.PopupPanel {
         id: panel
+        open: root.menuOpen
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 4
         width: 340
         implicitHeight: content.implicitHeight
-        radius: Services.Colors.radius
-        color: Services.Colors.surface
-        border.width: 1
-        border.color: Services.Colors.border
 
         // Absorbs clicks anywhere on the panel (not just its interactive
         // controls) so they don't fall through to the dismiss overlay.

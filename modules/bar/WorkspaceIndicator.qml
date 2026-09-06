@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "../../services" as Services
+import "../widgets" as Widgets
 
 // One pill per workspace on this bar's output, filled in when active.
 // Backed by Services.Workspaces, which is fed by the compositor's
@@ -44,8 +45,8 @@ Item {
                 radius: 4
                 color: modelData.active ? Services.Colors.accent : Services.Colors.overlay
 
-                Behavior on Layout.preferredWidth { NumberAnimation { duration: 120 } }
-                Behavior on color { ColorAnimation { duration: 120 } }
+                Behavior on Layout.preferredWidth { Widgets.Anim { type: Widgets.Anim.FastSpatial } }
+                Behavior on color { Widgets.ColorAnim {} }
 
                 MouseArea {
                     anchors.fill: parent

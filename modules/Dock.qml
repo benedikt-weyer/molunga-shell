@@ -7,6 +7,7 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "./widgets" as Widgets
 
 // An application dock, bottom-anchored on the primary screen, with a
 // running-apps section fed by the compositor's `wlr-foreign-toplevel-
@@ -293,7 +294,7 @@ PanelWindow {
                 border.color: tile.highlighted ? Services.Colors.accent : "transparent"
                 border.width: 2
 
-                Behavior on color { ColorAnimation { duration: 100 } }
+                Behavior on color { Widgets.ColorAnim {} }
 
                 HoverHandler { id: hover }
             }

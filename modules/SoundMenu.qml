@@ -12,7 +12,8 @@ PanelWindow {
     id: root
 
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
-    visible: Services.UiState.soundMenuOpen
+    readonly property bool menuOpen: Services.UiState.soundMenuOpen
+    visible: menuOpen || panel.animating
 
     WlrLayershell.namespace: "molunga-sound-menu"
     WlrLayershell.layer: WlrLayer.Overlay
@@ -28,8 +29,8 @@ PanelWindow {
     property bool outputPickerOpen: false
     property bool inputPickerOpen: false
 
-    onVisibleChanged: {
-        if (visible) dismissOverlay.forceActiveFocus();
+    onMenuOpenChanged: {
+        if (menuOpen) dismissOverlay.forceActiveFocus();
         else {
             outputPickerOpen = false;
             inputPickerOpen = false;
@@ -226,17 +227,14 @@ PanelWindow {
         }
     }
 
-    Rectangle {
+    Widgets.PopupPanel {
         id: panel
+        open: root.menuOpen
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: 4
         width: 370
         implicitHeight: content.implicitHeight
-        radius: Services.Colors.radius
-        color: Services.Colors.surface
-        border.width: 1
-        border.color: Services.Colors.border
 
         MouseArea { anchors.fill: parent }
 

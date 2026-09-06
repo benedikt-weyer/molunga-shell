@@ -52,8 +52,11 @@ Item {
         border.width: 3
         border.color: Services.Colors.accent
 
-        Behavior on width { NumberAnimation { duration: 90 } }
-        Behavior on x { NumberAnimation { duration: pointer.pressed ? 0 : 70 } }
+        Behavior on width { Anim { type: Anim.FastEffects } }
+        Behavior on x {
+            enabled: !pointer.pressed
+            Anim { type: Anim.FastSpatial }
+        }
     }
 
     MouseArea {

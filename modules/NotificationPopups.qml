@@ -4,6 +4,7 @@ import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Layouts
 import "../services" as Services
+import "./widgets" as Widgets
 
 // Toast stack, top-right of the primary screen, for unread notifications
 // (Services.Notifications.active). Non-interactive placement-wise (doesn't
@@ -38,12 +39,25 @@ PanelWindow {
                 id: toast
                 required property var modelData
 
+                // Slides/fades in on arrival rather than just popping into
+                // place; `entered` flips true one tick after creation so
+                // the Behaviors below have something to animate towards.
+                property bool entered: false
+                Component.onCompleted: toast.entered = true
+
                 Layout.fillWidth: true
                 implicitHeight: content.implicitHeight + 20
                 radius: Services.Colors.radius
                 color: Services.Colors.surface
                 border.width: 1
                 border.color: modelData.urgency === NotificationUrgency.Critical ? Services.Colors.danger : Services.Colors.border
+
+                opacity: entered ? 1 : 0
+                transform: Translate {
+                    y: toast.entered ? 0 : -12
+                    Behavior on y { Widgets.Anim { type: Widgets.Anim.DefaultSpatial } }
+                }
+                Behavior on opacity { Widgets.Anim { type: Widgets.Anim.DefaultEffects } }
 
                 ColumnLayout {
                     id: content

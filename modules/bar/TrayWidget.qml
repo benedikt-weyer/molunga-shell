@@ -6,6 +6,7 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
 import "../../services" as Services
+import "../widgets" as Widgets
 
 // StatusNotifier system tray. Applications provide the icon, activation
 // behavior, scroll handling, and (where available) the native context menu.
@@ -33,7 +34,7 @@ RowLayout {
                 modelData.display(QsWindow.window, point.x, point.y);
             }
 
-            Behavior on color { ColorAnimation { duration: 100 } }
+            Behavior on color { Widgets.ColorAnim {} }
 
             IconImage {
                 anchors.centerIn: parent
