@@ -7,7 +7,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+    (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
       in
@@ -22,5 +22,10 @@
         devShells.default = pkgs.mkShell {
           packages = [ pkgs.quickshell ];
         };
-      });
+      })) // {
+      # Runs molunga-shell as a systemd --user service (see nix/module.nix
+      # for why: it's what lets a rebuild pick up a new build without a
+      # logout).
+      nixosModules.default = import ./nix/module.nix;
+    };
 }
