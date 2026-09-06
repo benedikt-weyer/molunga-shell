@@ -329,21 +329,28 @@ PanelWindow {
                     // empty string (any app that never sets a Wayland
                     // app_id at all - e.g. gui-settings, a Fyne/GLFW app -
                     // reports `appId: ""`, not a name that just fails to
-                    // match) matched a essentially arbitrary desktop entry
-                    // instead of finding none. Only heuristic-match a
-                    // non-empty appId, and fall back to the window title
-                    // (still a real signal, just a noisier one) before
-                    // giving up and letting the IconImage below use its own
-                    // generic fallback.
+                    // match) matched an essentially arbitrary desktop entry
+                    // instead of finding none. Guessing further from the
+                    // window title would just trade one wrong-icon guess
+                    // for another (a title like "ironland-copositor
+                    // Settings" fuzzy-matches plenty of unrelated things
+                    // too) - GNOME doesn't try that either, it shows the
+                    // generic icon for anything it can't cleanly match, so
+                    // an unresolved appId falls straight through to the
+                    // IconImage's own fallback below instead.
                     readonly property var desktopEntry:
                         DesktopEntries.byId(modelData.appId)
                         || (modelData.appId ? DesktopEntries.heuristicLookup(modelData.appId) : null)
-                        || (modelData.title ? DesktopEntries.heuristicLookup(modelData.title) : null)
                     highlighted: modelData.activated
 
                     IconImage {
                         anchors.centerIn: parent
                         implicitSize: 28
+                        // "application-x-executable" is the same generic
+                        // fallback icon name GNOME itself uses for
+                        // unmatched apps - a gear/cog under any
+                        // freedesktop-compliant icon theme (this shell's
+                        // Papirus-Dark included).
                         source: Quickshell.iconPath(
                             runningTile.desktopEntry?.icon ?? "",
                             "application-x-executable")
