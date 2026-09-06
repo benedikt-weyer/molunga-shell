@@ -3,7 +3,8 @@
 A [Quickshell](https://quickshell.org) configuration for
 [ironland-copositor](../ironland-copositor). Provides a top bar (workspace
 indicator, media widget, wifi/LAN/VPN status, notification bell, clock,
-settings button), an application dock, and a notification/settings UI.
+settings and session/power buttons), an application dock, and a
+notification/settings UI.
 
 ## Running
 
@@ -32,6 +33,7 @@ rest of the shell works against any wlr-layer-shell compositor.
 - `modules/NotificationPopups.qml`, `modules/NotificationMenu.qml` - toasts
   and notification history.
 - `modules/NetworkMenu.qml` - wifi/LAN/VPN details and controls.
+- `modules/SessionMenu.qml` - reboot/shutdown/log out.
 - `modules/SettingsWindow.qml` - editor for ironland-copositor's
   `config.toml`.
 - `modules/widgets/*` - small reusable pieces (e.g. `ToggleSwitch`) shared
