@@ -1,5 +1,5 @@
 {
-  description = "molunga-shell: a Quickshell configuration for ironland-copositor";
+  description = "molunga-shell: a Quickshell configuration for ironland-compositor";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

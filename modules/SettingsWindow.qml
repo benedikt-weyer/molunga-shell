@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import "../services" as Services
 import "./widgets" as Widgets
 
-// Editor for ironland-copositor's own config.toml (terminal/browser/file
+// Editor for ironland-compositor's own config.toml (terminal/browser/file
 // manager, top bar, workspace layout) - see Services.CompositorConfig for
 // how it's read back and patched. Not layer-shell: a normal floating
 // window, since a settings dialog has no business reserving screen space

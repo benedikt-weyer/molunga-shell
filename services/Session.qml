@@ -5,7 +5,7 @@ import Quickshell
 // D-Bus to logind themselves, so there's no need to talk to
 // org.freedesktop.login1.Manager directly). Needs polkit running to
 // authorize poweroff/reboot for the active session - see
-// ironland-copositor's flake.nix, which enables it for exactly this.
+// ironland-compositor's flake.nix, which enables it for exactly this.
 Singleton {
     function shutdown() {
         Quickshell.execDetached(["systemctl", "poweroff"]);

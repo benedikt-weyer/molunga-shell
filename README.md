@@ -1,7 +1,7 @@
 # molunga-shell
 
 A [Quickshell](https://quickshell.org) configuration for
-[ironland-copositor](../ironland-copositor). Provides a top bar (workspace
+[ironland-compositor](../ironland-compositor). Provides a top bar (workspace
 indicator, media widget, wifi/LAN/VPN status, notification bell, clock,
 sound input/output controls, system tray, settings and session/power
 buttons), an application dock, and a notification/settings UI.
@@ -31,7 +31,7 @@ config. `scripts/run`'s plain `-p ./shell.qml` is fine for local dev, since a
 working-tree checkout path stays stable across commits.
 
 The workspace indicator needs the `ironland-workspaces` helper (built
-alongside `ironland-copositor` itself - see its `Cargo.toml`) on `PATH`; the
+alongside `ironland-compositor` itself - see its `Cargo.toml`) on `PATH`; the
 rest of the shell works against any wlr-layer-shell compositor.
 
 ## Layout
@@ -48,7 +48,7 @@ rest of the shell works against any wlr-layer-shell compositor.
 - `modules/SoundMenu.qml` - output/input device selection, mute controls,
   and volume sliders.
 - `modules/SessionMenu.qml` - reboot/shutdown/log out.
-- `modules/SettingsWindow.qml` - editor for ironland-copositor's
+- `modules/SettingsWindow.qml` - editor for ironland-compositor's
   `config.toml`.
 - `modules/widgets/*` - small reusable pieces (e.g. `ToggleSwitch`) shared
   across the modules above.
@@ -65,7 +65,7 @@ that binary's module doc for the wire format.
 
 Wifi/LAN status (`services/Network.qml`) is the exception to all of the
 above: it's compositor-agnostic (talks to NetworkManager over D-Bus, not to
-ironland-copositor), so it uses Quickshell's own `Quickshell.Networking`
+ironland-compositor), so it uses Quickshell's own `Quickshell.Networking`
 module directly, no bridging needed. VPN (`services/Vpn.qml`) needs a
 little more, since NetworkManager's VPN connection profiles aren't part of
 that module: it polls `nmcli` every few seconds instead.

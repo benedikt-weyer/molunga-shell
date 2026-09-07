@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Bridges ironland-copositor's per-output workspace state (the
+// Bridges ironland-compositor's per-output workspace state (the
 // `ext-workspace-v1` global it implements) into the shell, via the
 // `ironland-workspaces` helper binary shipped alongside the compositor -
 // Quickshell has no built-in support for that protocol to talk to it

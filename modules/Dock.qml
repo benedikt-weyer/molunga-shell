@@ -15,7 +15,7 @@ import "./widgets" as Widgets
 //
 // Pinned tiles launch via `DesktopEntry.execute()` rather than shelling out
 // directly, so apps pick up whatever the .desktop file specifies (Exec
-// field, terminal wrapping, etc). ironland-copositor's own configured
+// field, terminal wrapping, etc). ironland-compositor's own configured
 // terminal/browser/file manager (see `Services.CompositorConfig`) are
 // resolved by heuristic name lookup and used as the initial set of pins on
 // first run, ahead of a few fixed extras. Pin changes are saved in
@@ -42,7 +42,7 @@ PanelWindow {
     implicitHeight: 52
     color: "transparent"
 
-    readonly property var extraPinned: ["ironland-copositor-settings"]
+    readonly property var extraPinned: ["ironland-compositor-settings"]
 
     readonly property var runningToplevels: ToplevelManager.toplevels
 
@@ -349,7 +349,7 @@ PanelWindow {
                     // match) matched an essentially arbitrary desktop entry
                     // instead of finding none. Guessing further from the
                     // window title would just trade one wrong-icon guess
-                    // for another (a title like "ironland-copositor
+                    // for another (a title like "ironland-compositor
                     // Settings" fuzzy-matches plenty of unrelated things
                     // too) - GNOME doesn't try that either, it shows the
                     // generic icon for anything it can't cleanly match, so

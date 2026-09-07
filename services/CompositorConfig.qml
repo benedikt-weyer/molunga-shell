@@ -2,7 +2,7 @@ pragma Singleton
 import Quickshell
 import Quickshell.Io
 
-// Reads and edits ironland-copositor's own config.toml (see that repo's
+// Reads and edits ironland-compositor's own config.toml (see that repo's
 // `src/config.rs` for the authoritative schema) for the settings page.
 //
 // This is a line-based patcher, not a real TOML parser: it only knows how
@@ -14,7 +14,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property string path: (Quickshell.env("XDG_CONFIG_HOME") || (Quickshell.env("HOME") + "/.config")) + "/ironland-copositor/config.toml"
+    readonly property string path: (Quickshell.env("XDG_CONFIG_HOME") || (Quickshell.env("HOME") + "/.config")) + "/ironland-compositor/config.toml"
 
     property bool loaded: false
     property string terminal: "weston-terminal"

@@ -5,7 +5,7 @@ import Quickshell.Networking
 // Thin projection over Quickshell's own NetworkManager-backed
 // Quickshell.Networking module - unlike workspaces, this needs no bridging
 // of our own, since it's compositor-agnostic (talks to NetworkManager over
-// D-Bus, not to ironland-copositor).
+// D-Bus, not to ironland-compositor).
 Singleton {
     id: root
 

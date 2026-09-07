@@ -18,7 +18,7 @@ in
     # `default.target` on any login, including a plain SSH one with no
     # Wayland display for this to attach to. It's meant to be started
     # explicitly once a compositor session is actually up - e.g.
-    # ironland-copositor's launch script does `systemctl --user start
+    # ironland-compositor's launch script does `systemctl --user start
     # molunga-shell.service` once it knows `WAYLAND_DISPLAY`.
     #
     # That's also what makes a rebuild pick up a new molunga-shell build
@@ -27,7 +27,7 @@ in
     # unit whose definition changed, and this one stays active for the
     # life of the session once started.
     systemd.user.services.molunga-shell = {
-      description = "molunga-shell (Quickshell) for ironland-copositor";
+      description = "molunga-shell (Quickshell) for ironland-compositor";
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/molunga-shell";
         Restart = "on-failure";
